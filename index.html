@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Add your short video idea</title>
+  </head>
+
+  <body style="font-family: Arial, sans-serif; padding: 40px; max-width: 600px;">
+    <h2>Add your short video idea</h2>
+
+    <input
+      id="idea"
+      type="text"
+      placeholder="Enter your idea..."
+      style="width: 100%; padding: 12px; font-size: 16px;"
+    />
+
+    <br /><br />
+
+    <button
+      onclick="sendToN8N()"
+      style="padding: 12px 24px; font-size: 16px; cursor: pointer;"
+    >
+      Send to N8N
+    </button>
+
+    <p id="status" style="margin-top: 15px;"></p>
+
+    <script>
+      async function sendToN8N() {
+        const idea = document.getElementById("idea").value.trim();
+        const status = document.getElementById("status");
+
+        if (!idea) {
+          status.textContent = "Please enter an idea ❌";
+          return;
+        }
+
+        status.textContent = "Sending...";
+
+        // 🔥 PUT YOUR PRODUCTION WEBHOOK URL HERE
+        const webhookUrl =
+          "https://peope.app.n8n.cloud/webhook/f1d82345-5db8-48ba-9554-0202542c9faf";
+
+        // ✅ FormData avoids CORS preflight
+        const formData = new FormData();
+        formData.append("idea", idea);
+
+        try {
+          const response = await fetch(webhookUrl, {
+            method: "POST",
+            body: formData
+          });
+
+          if (!response.ok) {
+            throw new Error("Request failed");
+          }
+
+          status.textContent = "Sent to N8N ✅";
+          document.getElementById("idea").value = "";
+        } catch (error) {
+          console.error(error);
+          status.textContent = "Failed to send ❌";
+        }
+      }
+    </script>
+  </body>
+</html>
